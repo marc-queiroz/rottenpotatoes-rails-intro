@@ -12,8 +12,16 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = ['G','PG','PG-13','R']
-    session[:column] = params[:column] if params[:column]
+    session[:column] = params[:column] if params.has_key?(:column)
     session[:ratings] = params[:ratings] if params.has_key?(:ratings) && !params[:ratings].empty?
+    
+    if session.has_key?(:column) && !params.has_key?(:column)
+      params[:column] = session[:column]
+      redirect_to movies_path(params)
+    elsif session.has_key?(:ratings) && !params.has_key?(:ratings)
+      params[:ratings] = session[:ratings]
+      redirect_to movies_path(params)
+    end
     
     @movies = Movie.all
     if session.has_key?(:column) && Movie.column_names.include?(session[:column])
@@ -21,7 +29,6 @@ class MoviesController < ApplicationController
       @movies.order!(@selected_column)
     end
     
-    # @selected_ratings = @all_ratings
     @selected_ratings = session.has_key?(:ratings) ? @all_ratings & session[:ratings].keys : @all_ratings
     @movies.where!("rating IN (?)", @selected_ratings)
   end
