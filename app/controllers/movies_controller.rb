@@ -21,7 +21,7 @@ class MoviesController < ApplicationController
       @movies.order!(@selected_column)
     end
     
-    @selected_ratings = []
+    @selected_ratings = @all_ratings
     @selected_ratings = @all_ratings & session[:ratings].keys unless session[:ratings] == nil
     @movies.where!("rating IN (?)", @selected_ratings)
   end
