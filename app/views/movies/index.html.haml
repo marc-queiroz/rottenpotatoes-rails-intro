@@ -11,9 +11,9 @@
 %table#movies
   %thead
     %tr
-      %th{class: ("hilite" if @selected == :title)}= link_to "Movie Title", movies_path(selected: :title), {id: :title_header}
+      %th{class: ("hilite" if @selected_column == :title)}= link_to "Movie Title", movies_path(column: :title), {id: :title_header}
       %th Rating
-      %th{class: ("hilite" if @selected == :release_date)}= link_to "Release Date", movies_path(selected: :release_date), {id: :release_date_header}
+      %th{class: ("hilite" if @selected_column == :release_date)}= link_to "Release Date", movies_path(column: :release_date), {id: :release_date_header}
       %th More Info
   %tbody
     - @movies.each do |movie|
@@ -25,5 +25,5 @@
         
 = link_to 'Add new movie', new_movie_path
 
-%p=params[:ratings]
-%p=params[:commit]
+-#%p=params[:ratings]
+-#%p=params[:commit]
