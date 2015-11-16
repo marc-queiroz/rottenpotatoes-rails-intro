@@ -15,12 +15,13 @@ class MoviesController < ApplicationController
     session[:column] = params[:column] if params.has_key?(:column)
     session[:ratings] = params[:ratings] if params.has_key?(:ratings) && !params[:ratings].empty?
     
-    if session.has_key?(:column) && !params.has_key?(:column)
-      params[:column] = session[:column]
-      redirect_to movies_path(params)
-    elsif session.has_key?(:ratings) && !params.has_key?(:ratings)
-      params[:ratings] = session[:ratings]
-      redirect_to movies_path(params)
+    [:column, :ratings].each do |uri_param|
+      if session.has_key?(uri_param) && !params.has_key?(uri_param)
+        params[uri_param] = session[uri_param]
+        redirect_to movies_path(params)
+        flash.keep
+        return
+      end
     end
     
     @movies = Movie.all
