@@ -11,7 +11,13 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    
+    if params[:selected] == nil || !(Movie.column_names.include? params[:selected].to_s)
+      @movies = Movie.all
+    else
+      @selected = params[:selected].to_sym
+      @movies = Movie.all.order(@selected)
+    end
   end
 
   def new
