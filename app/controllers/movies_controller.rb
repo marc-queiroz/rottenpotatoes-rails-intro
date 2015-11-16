@@ -11,13 +11,22 @@ class MoviesController < ApplicationController
   end
 
   def index
-    
-    if params[:selected] == nil || !(Movie.column_names.include? params[:selected].to_s)
-      @movies = Movie.all
-    else
+    @all_ratings = ['G','PG','PG-13','R']
+    @movies = Movie.all
+    unless params[:selected] == nil || !(Movie.column_names.include? params[:selected].to_s)
       @selected = params[:selected].to_sym
       @movies = Movie.all.order(@selected)
     end
+    
+    #@selected_ratings = []
+    #params[:ratings].each { |k,v| @selected_ratings << k } unless params[:ratings] == 
+    if params[:commit] == 'Refresh'
+      @selected_ratings = []
+      @selected_ratings = @all_ratings & params[:ratings].keys unless params[:ratings] == nil
+    else
+      @selected_ratings = @all_ratings
+    end
+    @movies.where!("rating IN (?)", @selected_ratings)
   end
 
   def new
