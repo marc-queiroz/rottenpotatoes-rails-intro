@@ -13,16 +13,16 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = ['G','PG','PG-13','R']
     session[:column] = params[:column] if params[:column]
-    session[:ratings] = params[:ratings] if params[:ratings] && !params[:ratings].empty?
+    session[:ratings] = params[:ratings] if params.has_key?(:ratings) && !params[:ratings].empty?
     
     @movies = Movie.all
-    unless session[:column] == nil || !(Movie.column_names.include? session[:column].to_s)
+    if session.has_key?(:column) && Movie.column_names.include?(session[:column])
       @selected_column = session[:column].to_sym
       @movies.order!(@selected_column)
     end
     
-    @selected_ratings = @all_ratings
-    @selected_ratings = @all_ratings & session[:ratings].keys unless session[:ratings] == nil
+    # @selected_ratings = @all_ratings
+    @selected_ratings = session.has_key?(:ratings) ? @all_ratings & session[:ratings].keys : @all_ratings
     @movies.where!("rating IN (?)", @selected_ratings)
   end
 
